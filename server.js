@@ -77,19 +77,21 @@ async function fetchOEBB() {
     const prodL = common?.prodL || [];
 
     // ---- Convert to unified format ----
-const unified = jnyL.map(j => {
-  const nextStop = j.stopL?.[2] || null;
+const unified = [];
 
+for (const j of jnyL) {
+  const prod = prodL[j.prodX];
+  const cat = prod?.prodCtx?.catOutL || "";
+
+  // skip non-railjets
+  if (cat !== "railjet xpress") continue;
+
+  const nr = prod?.prodCtx?.matchId || "";
+  const nextStop = j.stopL?.[2] || null;
   const lat = j.pos?.y / 1e6;
   const lon = j.pos?.x / 1e6;
 
-  const prod = prodL[j.prodX];
-  const nr = prod?.prodCtx?.matchId || "";
-  const cat = prod?.prodCtx?.catOutL || "";
-
-  if (cat !== "railjet xpress") return null;   // skip non-railjets
-
-  return {
+  unified.push({
     vehicleId: "railjet",
     lat,
     lon,
@@ -107,8 +109,8 @@ const unified = jnyL.map(j => {
     tripShortName: j.prodX != null ? nr + " " + cat : null,
     tripHeadsign: j.dirTxt || null,
     routeShortName: "<span class=\"MNR2007\">&#481;</span>"
-  };
-});  // remove null entries → only railjets remain
+  });
+}
 
     unifiedCache = unified;
     lastUpdate = Date.now();
