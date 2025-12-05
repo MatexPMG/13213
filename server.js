@@ -124,9 +124,7 @@ fetchOEBB(); // run immediately on server start
 // ---------------------------
 app.get("/api/oebb", (req, res) => {
   res.json({
-    updated: lastUpdate,
-    count: unifiedCache.length,
-    trains: unifiedCache
+    data: unifiedCache
   });
 });
 
