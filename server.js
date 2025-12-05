@@ -87,6 +87,9 @@ async function fetchOEBB() {
       const nr = prod?.prodCtx?.matchId || "";
       const cat = prod?.prodCtx?.catOutL || "";
 
+            if (cat !== "railjet xpress") return null;   // <-- added
+
+
       return {
         vehicleId: "railjet",
         lat,
