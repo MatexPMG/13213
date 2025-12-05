@@ -95,7 +95,7 @@ for (const j of jnyL) {
     vehicleId: "railjet",
     lat,
     lon,
-    heading: j.dirGeo ?? null,
+    heading: (j.dirGeo)*90 ?? null,
     speed: 1,
     lastUpdated: Math.floor(Date.now() / 1000),
     nextStop: nextStop
