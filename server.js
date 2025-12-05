@@ -92,7 +92,7 @@ async function fetchOEBB() {
         lat,
         lon,
         heading: j.dirGeo ?? null,
-        speed: null, // ÖBB does not provide speed
+        speed: 1, // ÖBB does not provide speed
         lastUpdated: Math.floor(Date.now() / 1000),
         nextStop: nextStop
           ? {
