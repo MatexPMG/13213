@@ -38,7 +38,7 @@ const payload = {
       "meth": "JourneyGeoPos",
       "req": {
         "rect": {
-          "llCrd": { "x": 15966662.744518988, "y": 46837834.50091163 },
+          "llCrd": { "x": 10966662.744518988, "y": 46837834.50091163 },
           "urCrd": { "x": 19127978.662487734, "y": 48536792.19330821 }
         },
         "perSize": 35000,
@@ -53,6 +53,7 @@ const payload = {
     }
   ]
 };
+//ll x et majd tedd vissza 15re
 
 let unifiedCache = [];   // cached unified dataset
 let lastUpdate = 0;
