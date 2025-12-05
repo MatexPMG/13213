@@ -87,7 +87,7 @@ async function fetchOEBB() {
       const nr = prod?.prodCtx?.matchId || "";
       const cat = prod?.prodCtx?.catOutL || "";
 
-            if (cat !== "railjet xpress") return null;   // <-- added
+      if (cat !== "railjet xpress") ;   // <-- added
 
 
       return {
@@ -108,7 +108,7 @@ async function fetchOEBB() {
         tripHeadsign: j.dirTxt || null,
         routeShortName: "<span class=\"MNR2007\">&#481;</span>"
       };
-    });
+    }).filter(Boolean);
 
     unifiedCache = unified;
     lastUpdate = Date.now();
