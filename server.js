@@ -77,38 +77,38 @@ async function fetchOEBB() {
     const prodL = common?.prodL || [];
 
     // ---- Convert to unified format ----
-    const unified = jnyL.map(j => {
-      const nextStop = j.stopL?.[2] || null;
+const unified = jnyL.map(j => {
+  const nextStop = j.stopL?.[2] || null;
 
-      const lat = j.pos?.y / 1e6;
-      const lon = j.pos?.x / 1e6;
+  const lat = j.pos?.y / 1e6;
+  const lon = j.pos?.x / 1e6;
 
-      const prod = prodL[j.prodX];
-      const nr = prod?.prodCtx?.matchId || "";
-      const cat = prod?.prodCtx?.catOutL || "";
+  const prod = prodL[j.prodX];
+  const nr = prod?.prodCtx?.matchId || "";
+  const cat = prod?.prodCtx?.catOutL || "";
 
-      if (cat !== "railjet xpress") ;   // <-- added
+  if (cat !== "railjet xpress") return null;   // skip non-railjets
 
-
-      return {
-        vehicleId: "railjet",
-        lat,
-        lon,
-        heading: j.dirGeo ?? null,
-        speed: 1, // ÖBB does not provide speed
-        lastUpdated: Math.floor(Date.now() / 1000),
-        nextStop: nextStop
-          ? {
-              arrivalDelay: nextStop.aTimeR && nextStop.aTimeS
-                ? ((parseInt(nextStop.aTimeR) - parseInt(nextStop.aTimeS)) * 60) / 100
-                : null
-            }
-          : null,
-        tripShortName: j.prodX != null ? nr + " " + cat : null,
-        tripHeadsign: j.dirTxt || null,
-        routeShortName: "<span class=\"MNR2007\">&#481;</span>"
-      };
-    }).filter(Boolean);
+  return {
+    vehicleId: "railjet",
+    lat,
+    lon,
+    heading: j.dirGeo ?? null,
+    speed: 1,
+    lastUpdated: Math.floor(Date.now() / 1000),
+    nextStop: nextStop
+      ? {
+          arrivalDelay:
+            nextStop.aTimeR && nextStop.aTimeS
+              ? ((parseInt(nextStop.aTimeR) - parseInt(nextStop.aTimeS)) * 60) / 100
+              : null
+        }
+      : null,
+    tripShortName: j.prodX != null ? nr + " " + cat : null,
+    tripHeadsign: j.dirTxt || null,
+    routeShortName: "<span class=\"MNR2007\">&#481;</span>"
+  };
+});  // remove null entries → only railjets remain
 
     unifiedCache = unified;
     lastUpdate = Date.now();
