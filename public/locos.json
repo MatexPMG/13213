@@ -1,0 +1,289 @@
+{
+  "193": {
+    "nick": "Vectron",
+    "manufacturer": "Siemens",
+    "production": "2010-",
+    "vmax": 160,
+    "power": "5200 kW"
+  },
+    "293": {
+    "nick": "Vectron",
+    "manufacturer": "Siemens",
+    "production": "2010-",
+    "vmax": 160,
+    "power": "5200 kW"
+  },
+  "116": {
+    "nick": "ÖBB Taurus",
+    "manufacturer": "Siemens",
+    "production": "2000–2006",
+    "vmax": 230,
+    "power": "6400 kW"
+  },
+  "182": {
+    "nick": "Akiem Taurus",
+    "manufacturer": "Siemens",
+    "production": "2000–2006",
+    "vmax": 230,
+    "power": "6400 kW"
+  },
+  "630": {
+    "nick": "Gigant",
+    "manufacturer": "Ganz-MÁVAG / Ganz-VM",
+    "production": "1974–1988",
+    "vmax": 120,
+    "power": "3600 kW"
+  },
+  "430": {
+    "nick": "GySEV Szili",
+    "manufacturer": "Ganz-MÁVAG / Ganz-VM",
+    "production": "1963–1982",
+    "vmax": 120,
+    "power": "2200 kW"
+  },
+  "431": {
+    "nick": "Szili",
+    "manufacturer": "Ganz-MÁVAG / Ganz-VM",
+    "production": "1963–1982",
+    "vmax": 120,
+    "power": "2200 kW"
+  },
+  "432": {
+    "nick": "Fecske Szili",
+    "manufacturer": "Ganz / MÁV Északi",
+    "production": "1999-2007 (felújítás)",
+    "vmax": 120,
+    "power": "2200 kW"
+  },
+  "433": {
+    "nick": "Cirmos Szili",
+    "manufacturer": "Ganz / MÁV Északi",
+    "production": "2007-2008 (felújítás)",
+    "vmax": 120,
+    "power": "2200 kW"
+  },
+  "460": {
+    "nick": "Szöcske",
+    "manufacturer": "Ganz-VM",
+    "production": "1983-1992",
+    "vmax": 80,
+    "power": "820 kW"
+  },
+  "470": {
+    "nick": "Taurus",
+    "manufacturer": "Siemens",
+    "production": "2002–2006",
+    "vmax": 230,
+    "power": "6400 kW"
+  },
+  "471": {
+    "nick": "Vectron",
+    "manufacturer": "Siemens",
+    "production": "2010-",
+    "vmax": 160,
+    "power": "5200 kW"
+  },
+  "480": {
+    "nick": "TRAXX",
+    "manufacturer": "Bombardier",
+    "production": "2010-2012",
+    "vmax": 160,
+    "power": "5600 kW"
+  },
+  "418": {
+    "nick": "Csörgő",
+    "manufacturer": "Ganz",
+    "production": "1973-1980",
+    "vmax": 100,
+    "power": "1324 kW"
+  },
+  "628": {
+    "nick": "Szergej",
+    "manufacturer": "Luganszki Mozdonygyár",
+    "production": "1965–1974",
+    "vmax": 100,
+    "power": "1472 kW"
+  },
+  "408": {
+    "nick": "Púpos",
+    "manufacturer": "Ganz",
+    "production": "1963-1970",
+    "vmax": 100,
+    "power": "736 kW"
+  },
+  "448": {
+    "nick": "Bobó",
+    "manufacturer": "Ganz",
+    "production": "1954-1971",
+    "vmax": 80,
+    "power": "442 kW"
+  },
+  "438": {
+    "nick": "Kisdácsia",
+    "manufacturer": "Augusztus 23. Művek",
+    "production": "1974-1979",
+    "vmax": 60,
+    "power": "331 kW"
+  },
+  "478": {
+    "nick": "Nagydácsia",
+    "manufacturer": "Augusztus 23. Művek",
+    "production": "1974-1979",
+    "vmax": 70,
+    "power": "700 kW"
+  },
+  "434": {
+    "nick": "Samu",
+    "manufacturer": "Ganz-Hunslet",
+    "production": "1994",
+    "vmax": 160,
+    "power": "1755 kW"
+  },
+  "424": {
+    "nick": "Kis Samu",
+    "manufacturer": "Ganz-Hunslet",
+    "production": "1996",
+    "vmax": 120,
+    "power": "1755 kW"
+  },
+  "414": {
+    "nick": "Hernyó",
+    "manufacturer": "Ganz-MÁVAG / Ganz-VM",
+    "production": "1988-1990",
+    "vmax": 120,
+    "power": "1520 kW"
+  },
+  "415": {
+    "nick": "FLIRT",
+    "manufacturer": "Stadler",
+    "production": "2006-",
+    "vmax": 160,
+    "power": "2000 kW"
+  },
+  "425": {
+    "nick": "Talent",
+    "manufacturer": "Bombardier",
+    "production": "2006",
+    "vmax": 140,
+    "power": "1440 kW"
+  },
+  "435": {
+    "nick": "FLIRT 3",
+    "manufacturer": "Stadler",
+    "production": "2017-2018",
+    "vmax": 160,
+    "power": "2000 kW"
+  },
+  "815": {
+    "nick": "KISS",
+    "manufacturer": "Stadler",
+    "production": "2010-",
+    "vmax": 160,
+    "power": "4000 kW"
+  },
+  "117": {
+    "nick": "Bzmot",
+    "manufacturer": "Tatra Studenka",
+    "production": "1977–1986",
+    "vmax": 80,
+    "power": "141 kW"
+  },
+  "127": {
+    "nick": "InterPici",
+    "manufacturer": "Tatra Studenka",
+    "production": "1997-2001",
+    "vmax": 90,
+    "power": "141 kW"
+  },
+  "136": {
+    "nick": "Iker Bz",
+    "manufacturer": "Tatra Studenka",
+    "production": "2005",
+    "vmax": 90,
+    "power": "141 kW"
+  },
+  "426": {
+    "nick": "Desiro",
+    "manufacturer": "Siemens",
+    "production": "2003-2006",
+    "vmax": 120,
+    "power": "630 kW"
+  },
+  "416": {
+    "nick": "Uzsgyi",
+    "manufacturer": "Metrovagonmas",
+    "production": "2002-2004",
+    "vmax": 100,
+    "power": "630 kW"
+  },
+  "247": {
+    "nick": "Jenbacher",
+    "manufacturer": "Jenbacher Werke",
+    "production": "1986–1996",
+    "vmax": 120,
+    "power": "364 kW"
+  },
+  "147": {
+    "nick": "Iker-Jenbacher",
+    "manufacturer": "Jenbacher Werke",
+    "production": "1986–1996",
+    "vmax": 120,
+    "power": "728 kW"
+  },
+  "446": {
+    "nick": "Iker-Jenbacher",
+    "manufacturer": "Jenbacher Werke",
+    "production": "1986–1996",
+    "vmax": 120,
+    "power": "728 kW"
+  },
+  "406": {
+    "nick": "TramTrain",
+    "manufacturer": "Stadler",
+    "production": "2020–2021",
+    "vmax": 100,
+    "power": "580/780 kW"
+  },
+  "001": {
+    "nick": "Viking",
+    "manufacturer": "Henschel",
+    "production": "1981-1986",
+    "vmax": 175,
+    "power": "2426 kW"
+  },
+  "288": {
+    "nick": "Mazsola",
+    "manufacturer": "Rába",
+    "production": "1955-1959",
+    "vmax": 50,
+    "power": "147 kW"
+  },
+  "490": {
+    "nick": "Astride",
+    "manufacturer": "Alstom",
+    "production": "1996–2002",
+    "vmax": 200,
+    "power": "5600 kW"
+  },
+  "005": {
+    "nick": "Bdt vezérlő",
+    "manufacturer": "Dunakeszi járműjavító",
+    "production": "-",
+    "vmax": 120,
+    "power": "-"
+  },
+  "055": {
+    "nick": "Halberstadti vezérlő",
+    "manufacturer": "RAW Halberstadt",
+    "production": "1978-1983",
+    "vmax": 140,
+    "power": "-"
+  },
+  "076": {
+    "nick": "Schlieren vezérlő",
+    "manufacturer": "Jenbacher Werke",
+    "production": "1995-2005 (felújítás)",
+    "vmax": 160,
+    "power": "-"
+  }
+}

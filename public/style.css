@@ -1,0 +1,476 @@
+@font-face {
+  font-family: 'MNR2007';
+  src: url('MNR2007.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+.MNR2007 {
+  font-family: 'MNR2007', sans-serif;
+  line-height: 1;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+body { 
+  margin: 0;
+}
+
+#map { 
+  height: 100%;
+  z-index: 1;
+}
+
+.leaflet-bottom .leaflet-control-zoom {
+  right: 128;
+}
+
+.leaflet-bottom .leaflet-control-locate {
+  right: 128;
+}
+
+#mkk-logo {
+  position: absolute;
+  z-index: 999;
+  bottom: 30;
+}
+
+.train-marker {
+  position: relative;
+  width: 18;
+  height: 18;
+}
+
+.train-marker .circle {
+  position: absolute;
+  width: 16;
+  height: 16;
+  top: 0;
+  left: 0;
+
+  border: 1px solid rgb(0, 0, 0);
+  border-radius: 50%;
+}
+
+.train-marker .arrow {
+  position: absolute;
+  width: 2;
+  height: 2;
+  top: 50%;
+  left: 50%;
+
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 7px solid rgb(0, 0, 0);
+}
+
+@media (max-width: 1080px) {
+  .train-marker {
+    transform: scale(1.4);
+    transform-origin: center;
+  }
+}
+
+.custom-popup .leaflet-popup-content-wrapper {
+  color: rgb(255, 255, 255);
+  background-color: rgba(0, 68, 141, 0.8);
+
+  font-weight: normal;
+  font-size: 12;
+
+  padding: 5;
+  padding-bottom: 3;
+  border-radius: 0;
+
+  box-shadow: none;
+  transform: translateX(-50%);
+}
+
+.custom-popup .leaflet-popup-tip-container {
+  display: none;
+}
+
+.custom-popup .leaflet-popup-content {
+  margin: 0;
+  white-space: nowrap;
+}
+
+#trainSearch {
+  position: absolute;
+  height: 35;
+  width: 245;
+
+  text-indent: 5;
+
+	border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+
+  background-clip: padding-box;
+  background-image: url(img/srch.png);
+  background-position: 210px 2px; 
+  background-repeat: no-repeat;
+}
+
+#trainSearch::placeholder{
+  color: rgba(0, 0, 0, 0.6);
+}
+
+#trainSearch:focus {
+  border-bottom: 2px solid rgba(0, 68, 141, 0.75);
+  transition: border-bottom 0.5s ease;
+}
+
+#trainSearch:hover {
+  background-color: rgb(244, 244, 244);
+}
+
+#suggestions {
+  position: absolute;
+  width: 241;
+  max-height: 150;
+  top: 35;
+
+	border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+
+  background: rgba(255, 255, 255, 0.8);
+  background-clip: padding-box;
+
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 14;
+
+  display: none;
+  overflow-y: auto;
+}
+
+#suggestions .loc {
+  font-weight: bold;
+}
+
+#suggestions div {
+  padding: 5 8;
+  cursor: pointer;
+}
+
+#suggestions div:hover {
+  color: white;
+
+  background: rgba(0, 68, 141, 0.8);
+}
+
+#suggestions div {
+  padding: 6 8;
+  cursor: pointer;
+  border-bottom: 1px solid rgb(204, 204, 204);
+}
+
+#suggestions div:last-child {
+  border-bottom: none;
+}
+
+#suggestions::-webkit-scrollbar {
+  display: none;
+}
+
+#legend {
+  position: absolute;
+  z-index: 1000;
+  bottom: 27;
+  right: 10;
+  height: 113;
+  width: 106;
+  padding: 4;
+  background: rgba(255,255,255,0.9);
+  background-clip: padding-box;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 13;
+  line-height: 0;
+}
+
+#legend h4 {
+  font-size: 14;
+  margin: 0;
+  padding: 11 0 15 0;
+  text-align: center;
+}
+
+.legend-item {
+  display: flex;
+  margin-bottom: 6;
+  margin-left: 4;
+  align-items: center;
+}
+
+.legend-item .circle {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-right: 6px;
+  border: 1px solid rgb(0, 0, 0);
+}
+
+.train-info {
+  position: absolute;
+  top: 140;
+  right: 10;
+  width: 338;
+  z-index: 1000;
+
+  background-color: rgb(255, 255, 255);
+  background-clip: padding-box;
+	border: 2px solid rgba(0, 0, 0, 0.2);
+
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  vertical-align: middle;
+
+  display: none;
+}
+
+.train-info h1 {
+  color: white;
+  background-color: rgba(0, 68, 141, 0.75);
+  margin: 0;
+
+  padding-top: 7;
+  padding-bottom: 3;
+  text-align: center;
+  font-size: 17;
+}
+
+.train-info h6 {
+  color: white;
+  background-color: rgba(0, 68, 141, 0.75);
+  margin: 0;
+
+  padding-bottom: 7;
+  text-align: center;
+  font-size: 17;
+}
+
+.train-info h2 {
+  color: white;
+  background-color: red;
+
+  text-align: center;
+  font-size: 14;
+  padding: 5;
+  margin: 0;
+}
+
+.train-info h3 {
+  color: black;
+  background-color: rgb(255, 153, 0);
+  max-height: 6vh;
+
+  text-align: center;
+  font-size: 14;
+  padding: 5;
+  margin: 0;
+
+  overflow-y: auto;
+}
+
+.train-info h3::-webkit-scrollbar {
+  display: none;
+}
+
+
+.train-info table {
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+.train-info th {
+  text-align: center;
+  font-weight: bold;
+  vertical-align: middle;
+  padding: 6px 6px;
+}
+
+.train-info thead {
+  color: white;
+  background-color: rgb(0, 68, 141);
+  font-size: 13;
+}
+
+.train-info .erk {
+  text-align: left;
+}
+
+.train-info .ind {
+  text-align: left;
+}
+
+.tbody-container {
+  overflow-y: auto;
+  display: block;
+  max-height: 40vh;
+}
+
+/*mobil*/
+@media (max-width: 1080px) {
+  .tbody-container {
+    max-height: 20vh;
+  }
+}
+
+.tbody-container::-webkit-scrollbar {
+  display: none;
+}
+
+.tbody-container thead th {
+  position: sticky;
+  top: 0;
+  background: rgb(64, 115, 170);
+  z-index: 2;
+}
+
+.tbody-container table {
+  border-collapse: collapse;
+}
+
+/*header*/
+#stationN {
+  text-align: left;
+  width: 138;
+}
+
+#SchArr {
+  width: 65;
+}
+
+#SchDep {
+  width: 65;
+}
+
+#platformN {
+  text-align: center;
+  width: 65;
+}
+
+.train-info td {
+  padding: 2px 6px;
+  vertical-align: middle;
+}
+
+.train-info td.sched {
+  text-align: center;
+  color: rgb(51, 51, 51);
+  width: 65;
+}
+
+.train-info td.real {
+  text-align: left;
+}
+
+.train-info td.real.early {
+  color: rgba(0, 68, 141, 0.75);;
+  font-style: italic;
+}
+
+.train-info td.real.ontime {
+  color: rgb(0, 140, 0);
+  font-style: italic;
+}
+
+.train-info td.real.delayed {
+  color: rgb(255, 0, 17);
+  font-style: italic;
+}
+
+.train-info tr.past.even { background: rgb(203, 239, 203); }
+.train-info tr.past.odd  { background: rgb(179, 239, 179); }
+
+.train-info tr.future.even { background: rgb(255, 255, 255); }
+.train-info tr.future.odd  { background: rgb(244, 244, 244); }
+
+.loco-info {
+  position: absolute;
+  z-index: 1000;
+
+  top: 200;
+  left: 10;
+  width: 282;
+
+  max-width: 59vh;
+
+  background: rgb(255, 255, 255);
+  background-clip: padding-box;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  display: none;
+  font-family: Arial, sans-serif;
+
+  overflow: auto;
+}
+
+.loco-info::-webkit-scrollbar {
+  display: none;
+}
+
+/*mobil*/
+@media (max-width: 1080px) {
+  .loco-info {
+    max-height: 26vh;
+  }
+}
+
+.loco-info h2 {
+  margin: 0;
+  padding: 10;
+  font-size: 24;
+  text-align: center;
+  color: rgb(255, 255, 255);
+  background-color: rgba(0, 68, 141, 0.75);
+}
+
+#locoIMG {
+  display: block;
+  margin: auto;
+  width: 250;
+  padding: 10 10 5 10;
+}
+
+.loco-info p {
+  margin: 5;
+  padding: 4 5 2 5;
+  text-align: center;
+  background-color: rgb(154, 154, 154);
+}
+
+.loco-info table {
+  width: 260;
+  border-collapse: collapse;
+  margin: 0 auto;
+  font-size: 14px;
+  line-height: 1.4;
+  table-layout: fixed;
+  margin-bottom: 8;
+}
+
+.loco-info table .odd  { background: rgb(244, 244, 244); }
+
+.loco-info td {
+  padding: 4px 6px;
+  vertical-align: top;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.loco-info td:first-child {
+  font-weight: bold;
+  text-align: left;
+  width: 50%;
+}
+
+.loco-info td:last-child {
+  text-align: right;
+  font-weight: normal;
+  width: 50%;
+}

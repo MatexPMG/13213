@@ -1,0 +1,53 @@
+<html lang="hu">
+<head>
+<title>Vonatinfó</title>
+<meta charset="UTF-8" />
+<meta name="description" content="Kövesse térképen a magyar vonatok közlekedését!">
+<meta name="viewport" content="width=device-width, initial-scale=0.55">
+<link rel="icon" type="image/x-icon" href="img/favicon.ico"/>
+<link rel="preload" type="font/ttf" href="MNR2007.ttf" as="font" crossorigin/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="TileLayer.Grayscale.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+<script src="https://unpkg.com/@mapbox/polyline"></script>
+</head>
+<body>
+<div class="leaflet-top leaflet-left">
+  <div class="leaflet-control leaflet-bar" id="search-container">
+    <input type="text" id="trainSearch" placeholder="Vonatkeresés..." />
+    <div id="suggestions"></div>
+  </div>
+</div>
+<div id="legend">
+  <h4>Késések</h4>
+  <div class="legend-item">
+    <span class="circle" style="background-color: rgb(59, 233, 42);"></span>
+    ≤ 5 perc
+  </div>
+  <div class="legend-item">
+    <span class="circle" style="background-color: rgb(251, 255, 0);"></span>
+    6 – 19 perc
+  </div>
+  <div class="legend-item">
+    <span class="circle" style="background-color: rgb(255, 165, 0);"></span>
+    20 – 59 perc
+  </div>
+  <div class="legend-item">
+    <span class="circle" style="background-color: rgb(255, 0, 17);"></span>
+    ≥ 60 perc
+  </div>
+</div>
+<div id="train-info" class="train-info"></div>
+<div id="loco-info" class="loco-info"></div>
+<div id="mkk-logo">
+  <a href="https://kozlekedesiklub.hu" target="_blank">
+    <img src="img/mkk.png" alt="MKK Logo" height="80px" width="80px">
+  </a>
+</div>
+<div id="map"></div>
+<script src="main.js"></script>
+</body>
+</html>
