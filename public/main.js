@@ -67,7 +67,7 @@ let tDMap = new Map();
 let click = false;
 
 function markers() {
-  fetch('https://13213-production.up.railway.app/api/railjets.json')
+  fetch('https://13213-production.up.railway.app/api/trains')
     .then(res => res.json())
     .then(json => {    
       tLayer.clearLayers();

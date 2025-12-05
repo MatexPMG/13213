@@ -1,9 +1,9 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "server2.js",
+  "main": "s3.js",
   "scripts": {
-    "start": "node server2.js"
+    "start": "node s3.js"
   },
   "engines": {
     "node": "18.x"
