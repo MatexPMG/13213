@@ -316,8 +316,8 @@ async function fetchOEBB() {
       if (cat !== "railjet xpress") continue; // only Railjets
 
       const scheduledSec = hhmmssToSeconds(nextStop.aTimeS); // scheduled
-const actualSec = hhmmssToSeconds(nextStop.aTimeR);    // actual
-const arrivalDelay = scheduledSec != null && actualSec != null
+ const actualSec = hhmmssToSeconds(nextStop.aTimeR);    // actual
+ const arrivalDelay = scheduledSec != null && actualSec != null
   ? actualSec - scheduledSec
   : null;
 
@@ -340,15 +340,15 @@ const arrivalDelay = scheduledSec != null && actualSec != null
         const scheduler = await fetchMAVTimetable(nr);
 
         const stoptimes = scheduler.map(stop => {
-const scheduledArrival = secondsSinceMidnight(stop.arrive);
-const actualArrival = secondsSinceMidnight(stop.actualOrEstimatedArrive);
-const arrivalDelay = actualArrival != null && scheduledArrival != null
+ const scheduledArrival = secondsSinceMidnight(stop.arrive);
+ const actualArrival = secondsSinceMidnight(stop.actualOrEstimatedArrive);
+ const arrivalDelay = actualArrival != null && scheduledArrival != null
   ? actualArrival - scheduledArrival
   : null;
 
-const scheduledDeparture = secondsSinceMidnight(stop.start);
-const actualDeparture = secondsSinceMidnight(stop.actualOrEstimatedStart);
-const departureDelay = actualDeparture != null && scheduledDeparture != null
+ const scheduledDeparture = secondsSinceMidnight(stop.start);
+ const actualDeparture = secondsSinceMidnight(stop.actualOrEstimatedStart);
+ const departureDelay = actualDeparture != null && scheduledDeparture != null
   ? actualDeparture - scheduledDeparture
   : null;
           return {
@@ -379,14 +379,14 @@ const departureDelay = actualDeparture != null && scheduledDeparture != null
       unified.push(trainObj);
     }
 
-fs.writeFileSync(
+ fs.writeFileSync(
   "unified_oebb.json",
   JSON.stringify({
     data: {
       vehiclePositions: unified
     }
   }, null, 2)
-);
+ );
     console.log("✔ Updated ÖBB Railjets (" + unified.length + " trains)");
 
   } catch (err) {
@@ -394,10 +394,6 @@ fs.writeFileSync(
   }
   return unified;
 }
-
-// ---- Run ----
-fetchOEBB();
-setInterval(fetchOEBB, 60000)
 
 fetchFull();
 setInterval(fetchFull, 15000);
