@@ -89,7 +89,12 @@ function markers() {
         const icon = train.routeShortName ?? "";
 
         const UIC = ID.includes(':') ? ID.split(':')[1] : ID;
-        const loc = UIC ? `${UIC.slice(5, 8)} ${UIC.slice(8, 11)}` : "";
+        let loc
+        if (train.vehicleId === "railjet") {
+          loc = "railjet"
+        } else {
+          loc = UIC ? `${UIC.slice(5, 8)} ${UIC.slice(8, 11)}` : "";
+        }
         const searchId = `${name} | ${loc}`;
 
         const marker = L.marker([lat, lon], {
