@@ -322,39 +322,42 @@ for (const j of jnyL) {
   const nr = (prod?.name).match(/\d+/)[0] || "";
   const cat = prod?.prodCtx?.catOutL || "";
 
-  if (cat !== "railjet xpress") continue; // only Railjets
+  if (cat !== "railjet xpress") continue;
 
+  // -------------------------------
+  // UNIQUE TRAIN ID — IMPORTANT!
+  // -------------------------------
+  const id = "RJ" + nr;  // for example "RJ68", "RJ64"
 
   // -------------------------------
   // HEADING CALCULATION
   // -------------------------------
-  const id = "railjet"; // because ÖBB doesn't give UIC
   let heading = null;
 
   if (previousPositionsRJ[id]) {
     const prev = previousPositionsRJ[id];
 
-    // if moved, compute heading
+    // moved?
     if (prev.lat !== lat || prev.lon !== lon) {
       heading = calculateHeading(prev.lat, prev.lon, lat, lon);
     } else {
-      // keep old heading if train is standing
+      // keep old heading if standing still
       heading = prev.heading ?? null;
     }
   }
 
+  // save new
   previousPositionsRJ[id] = { lat, lon, heading };
 
-
   // -------------------------------
-  // INITIAL TRAIN OBJ
+  // TRAIN OBJECT
   // -------------------------------
   const trainObj = {
-    vehicleId: "railjet",
+    vehicleId: id,
     lat,
     lon,
     heading,
-    speed: null, // ÖBB does not provide speed
+    speed: null,
     lastUpdated: Math.floor(Date.now() / 1000),
     nextStop: { arrivalDelay: null, stopName: null },
     tripShortName: nr + " " + cat,
