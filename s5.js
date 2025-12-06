@@ -323,7 +323,7 @@ async function fetchOEBB() {
 
 
       const trainObj = {
-        vehicleId: "railjet",
+        vehicleId: "1:918011162310",
         lat,
         lon,
         heading: null,
