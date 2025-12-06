@@ -303,7 +303,7 @@ async function fetchOEBBRailjets() {
     const jnyL = data?.svcResL?.[0]?.res?.jnyL || [];
     const prodL = data?.svcResL?.[0]?.res?.common?.prodL || [];
 
-    const railjets = [];
+    const unified = [];
 
     for (const j of jnyL) {
       const nextStop = j.stopL[2] || null;
