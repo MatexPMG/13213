@@ -513,7 +513,7 @@ function locoInfo(train) {
   }
   const formattedUIC = uicF(rawUIC);
 
-  const speed = Math.round(train.speed * 3.6) || '0';
+  const speed = Math.round(train.speed * 3.6) || 'N/A';
   const nick = loco?.nick || '-';
   const manufacturer = loco?.manufacturer || '-';
   const production = loco?.production || '-';
