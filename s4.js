@@ -216,6 +216,16 @@ async function fetchFull() {
   console.log(`MÁV frissítve, összes vonat: ${latestFull.length}`);
 }
 
+  app.post('/api/timetables', (req, res) => {
+    const { tripShortName } = req.body;
+  if (!tripShortName) return res.status(400).json({ error: "Missing tripShortName" });
+
+  const train = latestFull.find(t => t.trip?.tripShortName === tripShortName);
+  if (!train) return res.status(404).json({ error: "Train not found" });
+
+  res.json(train);
+  });
+
 fetchFull();
 setInterval(fetchFull, 15000);
 
