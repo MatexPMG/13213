@@ -286,7 +286,7 @@ function hhmmssToSeconds(hms) {
 }
 
 // Store previous positions for heading calculation
-const previousPositions = {};  
+const previousPositionsRJ = {};  // store last pos for all Railjets
 function calculateHeading(prevLat, prevLon, lat, lon) {
   const toRad = deg => deg * Math.PI / 180;
   const toDeg = rad => rad * 180 / Math.PI;
