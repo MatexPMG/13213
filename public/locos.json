@@ -6,7 +6,7 @@
     "vmax": 230,
     "power": "6400 kW"
   },
-    "193": {
+  "193": {
     "nick": "Vectron",
     "manufacturer": "Siemens",
     "production": "2010-",
@@ -287,10 +287,10 @@
     "power": "-"
   },
   "076": {
-    "nick": "Samu (vezérlő)",
-    "manufacturer": "Ganz-Hunslet",
-    "production": "1994",
+    "nick": "Schlieren vezérlő",
+    "manufacturer": "Jenbacher Werke",
+    "production": "1995-2005 (felújítás)",
     "vmax": 160,
-    "power": "1755 kW"
+    "power": "-"
   }
 }
