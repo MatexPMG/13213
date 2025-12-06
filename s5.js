@@ -285,6 +285,26 @@ function hhmmssToSeconds(hms) {
   return h * 3600 + m * 60 + s;
 }
 
+// Store previous positions for heading calculation
+const previousPositions = {};  
+function calculateHeading(prevLat, prevLon, lat, lon) {
+  const toRad = deg => deg * Math.PI / 180;
+  const toDeg = rad => rad * 180 / Math.PI;
+
+  const φ1 = toRad(prevLat);
+  const φ2 = toRad(lat);
+  const Δλ = toRad(lon - prevLon);
+
+  const y = Math.sin(Δλ) * Math.cos(φ2);
+  const x = Math.cos(φ1) * Math.sin(φ2) -
+            Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+
+  let brng = Math.atan2(y, x);
+  brng = toDeg(brng);
+  return (brng + 360) % 360; // normalize
+}
+
+
 async function fetchOEBB() {
   try {
     const res = await fetch(hafas, {
@@ -312,11 +332,36 @@ for (const j of jnyL) {
 
   if (cat !== "railjet xpress") continue; // only Railjets
 
+
+  // -------------------------------
+  // HEADING CALCULATION
+  // -------------------------------
+  const id = "railjet"; // because ÖBB doesn't give UIC
+  let heading = null;
+
+  if (previousPositionsRJ[id]) {
+    const prev = previousPositionsRJ[id];
+
+    // if moved, compute heading
+    if (prev.lat !== lat || prev.lon !== lon) {
+      heading = calculateHeading(prev.lat, prev.lon, lat, lon);
+    } else {
+      // keep old heading if train is standing
+      heading = prev.heading ?? null;
+    }
+  }
+
+  previousPositionsRJ[id] = { lat, lon, heading };
+
+
+  // -------------------------------
+  // INITIAL TRAIN OBJ
+  // -------------------------------
   const trainObj = {
     vehicleId: "railjet",
     lat,
     lon,
-    heading: null,
+    heading,
     speed: null, // ÖBB does not provide speed
     lastUpdated: Math.floor(Date.now() / 1000),
     nextStop: { arrivalDelay: null, stopName: null },
