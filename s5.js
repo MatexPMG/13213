@@ -378,21 +378,10 @@ async function fetchOEBB() {
 
       unified.push(trainObj);
     }
-
- fs.writeFileSync(
-  "unified_oebb.json",
-  JSON.stringify({
-    data: {
-      vehiclePositions: unified
-    }
-  }, null, 2)
- );
-    console.log("✔ Updated ÖBB Railjets (" + unified.length + " trains)");
-
+    return unified;
   } catch (err) {
     console.error("❌ Fetch error:", err);
   }
-  return unified;
 }
 
 fetchFull();
