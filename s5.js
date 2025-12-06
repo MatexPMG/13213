@@ -286,6 +286,63 @@ function hhmmssToSeconds(hms) {
   return h * 3600 + m * 60 + s;
 }
 
+function decodePolyYX(encoded, scale = 1e6) {
+  const points = [];
+  let x = 0, y = 0, i = 0;
+
+  while (i < encoded.length) {
+    let result = 0, shift = 0, b;
+    do {
+      b = encoded.charCodeAt(i++) - 63;
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 0x20);
+    const dx = (result & 1) ? ~(result >> 1) : result >> 1;
+    x += dx;
+
+    result = 0;
+    shift = 0;
+    do {
+      b = encoded.charCodeAt(i++) - 63;
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 0x20);
+    const dy = (result & 1) ? ~(result >> 1) : result >> 1;
+    y += dy;
+
+    points.push({ x: x / scale, y: y / scale });
+  }
+  return points;
+}
+
+// compute bearing between two points in degrees
+function bearing(p1, p2) {
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+  let angle = Math.atan2(dy, dx) * 180 / Math.PI;
+  if (angle < 0) angle += 360;
+  return angle;
+}
+
+// find nearest segment to current train position
+function headingFromPolyline(pos, poly) {
+  if (!poly.length) return null;
+  let nearestSeg = 0;
+  let minDist = Infinity;
+
+  for (let i = 0; i < poly.length - 1; i++) {
+    const dx = pos.x - poly[i].x;
+    const dy = pos.y - poly[i].y;
+    const dist = dx * dx + dy * dy;
+    if (dist < minDist) {
+      minDist = dist;
+      nearestSeg = i;
+    }
+  }
+
+  return bearing(poly[nearestSeg], poly[nearestSeg + 1]);
+}
+
 // ---- Main function ----
 async function fetchOEBB() {
   try {
@@ -301,6 +358,8 @@ async function fetchOEBB() {
     const jnyL = data?.svcResL?.[0]?.res?.jnyL || [];
     const common = data?.svcResL?.[0]?.res?.common || {};
     const prodL = common?.prodL || [];
+    const polyEnc = common?.polyL?.[0]?.crdEncYX || "";
+    const poly = decodePolyYX(polyEnc);
 
     const unified = [];
 
@@ -321,12 +380,13 @@ async function fetchOEBB() {
   ? actualSec - scheduledSec
   : null;
 
+        const headingDeg = headingFromPolyline(j.pos, poly);
 
       const trainObj = {
         vehicleId: "railjet",
         lat,
         lon,
-        heading: j.driGeo,
+        heading: headingDeg,
         speed: null, // ÖBB does not provide speed
         lastUpdated: Math.floor(Date.now() / 1000),
         nextStop: {arrivalDelay: arrivalDelay},
