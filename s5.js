@@ -275,7 +275,7 @@ async function fetchMAVTimetable(trainNumber) {
 function secondsSinceMidnight(isoStr) {
   if (!isoStr) return null;
   const d = new Date(isoStr);
-  return (d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds())*3600;
+  return (d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds())+3600;
 }
 
 function hhmmssToSeconds(hms) {
