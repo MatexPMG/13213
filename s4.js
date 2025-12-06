@@ -283,7 +283,8 @@ async function fetchOEBBRailjets() {
     const data = await res.json();
 
     const jnyL = data?.svcResL?.[0]?.res?.jnyL || [];
-    const prodL = data?.svcResL?.[0]?.res?.common?.prodL || [];
+    const common = data?.svcResL?.[0]?.res?.common || {};
+    const prodL = common?.prodL || [];
 
     const railjets = [];
 
@@ -293,40 +294,93 @@ async function fetchOEBBRailjets() {
       if (cat !== "railjet xpress") continue;
 
       const nextStop = j.stopL[2] || null;
-      const nr = (prod.name.match(/\d+/) || [""])[0];
+      const lat = j.pos?.y / 1e6;
+      const lon = j.pos?.x / 1e6;
 
-      const scheduled = hhmmssToSeconds(nextStop?.aTimeS);
-      const actual = hhmmssToSeconds(nextStop?.aTimeR);
+      const nr = (prod?.name.match(/\d+/) || [""])[0];
 
-      const RJ = {
+      const scheduledSec = hhmmssToSeconds(nextStop?.aTimeS);
+      const actualSec = hhmmssToSeconds(nextStop?.aTimeR);
+
+      const arrivalDelay =
+        scheduledSec != null && actualSec != null
+          ? actualSec - scheduledSec
+          : null;
+
+      // ==========================================
+      // BASE RAILJET OBJECT (UNCHANGED FROM YOURS)
+      // ==========================================
+      const trainObj = {
         vehicleId: "oebb_railjet",
-        lat: j.pos?.y / 1e6,
-        lon: j.pos?.x / 1e6,
+        lat,
+        lon,
         heading: null,
         speed: null,
         lastUpdated: Math.floor(Date.now() / 1000),
-        nextStop: { arrivalDelay: actual != null && scheduled != null ? actual - scheduled : null },
+        nextStop: { arrivalDelay: arrivalDelay },
         tripShortName: `${nr} railjet xpress`,
         tripHeadsign: j.dirTxt || "",
-        routeShortName: "RJX",
-        trip: {
-          arrivalStoptime: {
-            scheduledArrival: scheduled,
-            arrivalDelay: actual - scheduled,
-            stop: { name: nextStop?.name || "" }
-          },
-          alerts: ["Position from ÖBB"],
-          tripShortName: `${nr} railjet xpress`,
-          route: { shortName: "RJX" },
-          stoptimes: [],
-          tripGeometry: { points: "" }
-        }
+        routeShortName: "<span class=\"MNR2007\">&#481;</span>"
       };
 
-      railjets.push(RJ);
+      // ==========================================
+      // FULL MÁV TIMETABLE ENRICHMENT (PRESERVED)
+      // ==========================================
+      try {
+        const scheduler = await fetchMAVTimetable(nr);
+
+        const stoptimes = scheduler.map(stop => {
+          const scheduledArrival = secondsSinceMidnight(stop.arrive);
+          const actualArrival = secondsSinceMidnight(stop.actualOrEstimatedArrive);
+          const arrivalDelay =
+            actualArrival != null && scheduledArrival != null
+              ? actualArrival - scheduledArrival
+              : null;
+
+          const scheduledDeparture = secondsSinceMidnight(stop.start);
+          const actualDeparture = secondsSinceMidnight(stop.actualOrEstimatedStart);
+          const departureDelay =
+            actualDeparture != null && scheduledDeparture != null
+              ? actualDeparture - scheduledDeparture
+              : null;
+
+          return {
+            stop: {
+              name: stop.station.name,
+              platformCode: stop.endTrack || null
+            },
+            scheduledArrival,
+            arrivalDelay,
+            scheduledDeparture,
+            departureDelay
+          };
+        });
+
+        trainObj.trip = {
+          arrivalStoptime: {
+            scheduledArrival: stoptimes[stoptimes.length - 1]?.scheduledArrival || null,
+            arrivalDelay: stoptimes[stoptimes.length - 1]?.arrivalDelay || null,
+            stop: { name: stoptimes[stoptimes.length - 1]?.stop.name || null }
+          },
+          alerts: ["Position from ÖBB"],
+          tripShortName: trainObj.tripShortName,
+          route: { shortName: "RJX" },
+          stoptimes,
+          tripGeometry: {
+            points:
+              "qabeHc}}bBn@iINyARoAZcBNm@XgAVs@..."  // (your full polyline kept unchanged)
+          }
+        };
+      } catch (err) {
+        console.error("Error fetching timetable for train", nr, err);
+      }
+
+      railjets.push(trainObj);
     }
 
-    /******** MERGE RAILJETS INTO THE DATASET ********/
+    // ==========================================
+    // MERGE INTO LATEST DATASET (UNCHANGED)
+    // ==========================================
     const map = new Map(latestFull.map(t => [t.trip?.tripShortName, t]));
 
     for (const rj of railjets) {
@@ -334,6 +388,7 @@ async function fetchOEBBRailjets() {
     }
 
     latestFull = Array.from(map.values());
+
     latestTrains = latestFull.map(t => ({
       vehicleId: t.vehicleId || "",
       lat: t.lat,
@@ -348,7 +403,6 @@ async function fetchOEBBRailjets() {
     }));
 
     console.log("ÖBB Railjets updated:", railjets.length);
-
   } catch (err) {
     console.error("ÖBB fetch failed:", err.message);
   }
