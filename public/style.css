@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'MNR2007';
-  src: url('MNR2007.woff2');
+  src: url('MNR2007.ttf') format('truetype');
   font-weight: bold;
   font-style: normal;
   font-display: swap;
@@ -70,7 +70,7 @@ body {
 
 @media (max-width: 1080px) {
   .train-marker {
-    transform: scale(1.5);
+    transform: scale(1.4);
     transform-origin: center;
   }
 }
