@@ -214,7 +214,6 @@ async function fetchFull() {
   );
 
   console.log(`MÁV frissítve, összes vonat: ${latestFull.length}`);
-}
 
   app.post('/api/timetables', (req, res) => {
     const { tripShortName } = req.body;
@@ -225,6 +224,7 @@ async function fetchFull() {
 
   res.json(train);
   });
+}
 
 fetchFull();
 setInterval(fetchFull, 15000);
