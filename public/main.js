@@ -25,30 +25,30 @@ function init() {
 
     const attr = ' CC-BY-SA <a href="https://openrailwaymap.org/">OpenRailwayMap</a>';
 
-    const ormStandard = L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', { attribution: attr });
-    const ormSignals = L.tileLayer('https://{s}.tiles.openrailwaymap.org/signals/{z}/{x}/{y}.png', { attribution: attr });
-    const ormElectrification = L.tileLayer('https://{s}.tiles.openrailwaymap.org/electrification/{z}/{x}/{y}.png', { attribution: attr });
-    const ormGauge = L.tileLayer('https://{s}.tiles.openrailwaymap.org/gauge/{z}/{x}/{y}.png', { attribution: attr });
-    const ormMaxspeed = L.tileLayer('https://{s}.tiles.openrailwaymap.org/maxspeed/{z}/{x}/{y}.png', { attribution: attr });
+    const ORMs = L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', { attribution: attr });
+    const ORMsig = L.tileLayer('https://{s}.tiles.openrailwaymap.org/signals/{z}/{x}/{y}.png', { attribution: attr });
+    const ORMe = L.tileLayer('https://{s}.tiles.openrailwaymap.org/electrification/{z}/{x}/{y}.png', { attribution: attr });
+    const ORMg = L.tileLayer('https://{s}.tiles.openrailwaymap.org/gauge/{z}/{x}/{y}.png', { attribution: attr });
+    const ORMspeed = L.tileLayer('https://{s}.tiles.openrailwaymap.org/maxspeed/{z}/{x}/{y}.png', { attribution: attr });
 
     const OSM = L.tileLayer.grayscale('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: 'Térképadatok © <a href="https://openstreetmap.org/">OpenStreetMap</a> szerkesztők'
     });
 
-    const ormLayers = {
-      "Vágányzat": ormStandard,
-      "Sebességkorlátok": ormMaxspeed,
-      "Villamosítás": ormElectrification,
-      "Vonatbefolyásolás": ormSignals,
-      "Nyomtáv": ormGauge,
+    const ORM = {
+      "Vágányzat": ORMs,
+      "Sebességkorlátok": ORMspeed,
+      "Villamosítás": ORMe,
+      "Vonatbefolyásolás": ORMsig,
+      "Nyomtáv": ORMg,
     };
 
     tLayer = L.layerGroup().addTo(map);
 
-    L.control.layers(ormLayers).addTo(map);
+    L.control.layers(ORM).addTo(map);
     OSM.addTo(map);
 
-    ormStandard.addTo(map);
+    ORMs.addTo(map);
 
     L.control.scale({'metric':true,'imperial':false}).addTo(map);
 
@@ -67,7 +67,7 @@ let tDMap = new Map();
 let click = false;
 
 function markers() {
-  fetch('https://13213-production.up.railway.app/api/trains')
+  fetch('https://vonatinfo-production.up.railway.app/api/trains')
     .then(res => res.json())
     .then(json => {    
       tLayer.clearLayers();
@@ -89,12 +89,7 @@ function markers() {
         const icon = train.routeShortName ?? "";
 
         const UIC = ID.includes(':') ? ID.split(':')[1] : ID;
-        let loc
-        if (train.vehicleId === "railjet") {
-          loc = "railjet"
-        } else {
-          loc = UIC ? `${UIC.slice(5, 8)} ${UIC.slice(8, 11)}` : "";
-        }
+        const loc = UIC ? `${UIC.slice(5, 8)} ${UIC.slice(8, 11)}` : "";
         const searchId = `${name} | ${loc}`;
 
         const marker = L.marker([lat, lon], {
@@ -120,11 +115,11 @@ function markers() {
         marker.on('click', () => {
           selID = name;
           TTupdate(train);
-          LocoUpdate(name);
+          l(name);
 
           if (sel) map.removeLayer(sel);
           sel = L.circleMarker([lat, lon], {
-            radius: window.innerWidth < 1080 ? 22 * 1.4 : 22,
+            radius: window.innerWidth < 1080 ? 22 * 1.5 : 22,
             color: 'aqua',
             fillColor: 'aqua',
             fillOpacity: 0.75,
@@ -170,10 +165,10 @@ function markers() {
             clearInterval(trainInfoUpdater);
             trainInfoUpdater = null;
           }
-          if (locoInfoUpdater) {
-            clearTimeout(locoInfoUpdater);
-            clearInterval(locoInfoUpdater);
-            locoInfoUpdater = null;
+          if (liu) {
+            clearTimeout(liu);
+            clearInterval(liu);
+            liu = null;
           }
           if (window.activeRoute) map.removeLayer(window.activeRoute);
         });
@@ -332,10 +327,10 @@ function TTupdate(train) {
   savedScrollTop = null;
   firstRenderDone = false;
 
-  function fetchAndRender() {
+  function fr() {
     if (!train?.tripShortName) return;
 
-    fetch('https://13213-production.up.railway.app/api/timetables', {
+    fetch('https://vonatinfo-production.up.railway.app/api/timetables', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -347,29 +342,26 @@ function TTupdate(train) {
       return res.json();
     })
     .then(data => {
-      showTrainInfo(data);
+      s(data);
     })
-    .catch(err => {
-      console.error('Error fetching timetable:', err);
-    });
   }
 
-  fetchAndRender();
+  fr();
 
-  function scheduleNextMinute() {
+  function nm() {
     const now = new Date();
     const msToNextMinute = (63 - now.getSeconds()) * 1000 - now.getMilliseconds();
 
     trainInfoUpdater = setTimeout(() => {
-      fetchAndRender();
-      trainInfoUpdater = setInterval(fetchAndRender, 60 * 1000);
+      fr();
+      trainInfoUpdater = setInterval(fr, 60 * 1000);
     }, msToNextMinute);
   }
 
-  scheduleNextMinute();
+  nm();
 }
 
-function showTrainInfo(train) {
+function s(train) {
   const container = document.getElementById('train-info');
   container.style.display = 'block';
 
@@ -391,16 +383,16 @@ function showTrainInfo(train) {
     nowSec += 86400;
   }
 
-  let lastPassedIndex = 0;
+  let passed = 0;
 
   const rows = train.trip.stoptimes.map((stop, i, arr) => {
-    const schedArr = formatTime(stop.scheduledArrival);
-    const schedDep = formatTime(stop.scheduledDeparture);
+    const schedArr = f(stop.scheduledArrival);
+    const schedDep = f(stop.scheduledDeparture);
     const realArr = stop.arrivalDelay
-      ? formatTime(stop.scheduledArrival + stop.arrivalDelay)
+      ? f(stop.scheduledArrival + stop.arrivalDelay)
     : schedArr;
     const realDep = stop.departureDelay
-      ? formatTime(stop.scheduledDeparture + stop.departureDelay)
+      ? f(stop.scheduledDeparture + stop.departureDelay)
     : schedDep;
 
     let arrClass = "ontime";
@@ -417,7 +409,7 @@ function showTrainInfo(train) {
     : (i % 2 === 0 ? "future even" : "future odd");
 
     if (depTimeSec < nowSec) {
-      lastPassedIndex = i;
+      passed = i;
     }
 
     const showArr = i > 0;
@@ -470,7 +462,7 @@ function showTrainInfo(train) {
   if (savedScrollTop !== null) {
     tbodyContainer.scrollTop = savedScrollTop;
   } else if (!firstRenderDone) {
-    const lastRow = document.getElementById(`station-row-${lastPassedIndex}`);
+    const lastRow = document.getElementById(`station-row-${passed}`);
     if (lastRow) {
       lastRow.scrollIntoView({ block: "center"});
     }
@@ -485,26 +477,26 @@ function showTrainInfo(train) {
   window.activeRoute = poly(train.trip.tripGeometry, map);
 }
 
-function formatTime(seconds) {
+function f(seconds) {
   const d = new Date(0);
   d.setSeconds(seconds);
   return d.toISOString().substr(11, 5); 
 }
 
-let locoData = {};
-let locoInfoUpdater = null;
+let ld = {};
+let liu = null;
 
 fetch('locos.json')
   .then(res => res.json())
   .then(data => {
-    locoData = data;
+    ld = data;
   });
 
 function uicC(uic) {
   return uic.toString().substring(5, 8);
 }
 
-function locoInfo(train) {
+function li(train) {
   const panel = document.getElementById('loco-info');
   panel.style.display = 'block';
 
@@ -512,7 +504,7 @@ function locoInfo(train) {
 
   let rawUIC;
   if (isRailjet) {
-    rawUIC = "railjet";                     // display in UI
+    rawUIC = "railjet";
   } else {
     rawUIC = train.vehicleId.split(':')[1] || train.vehicleId;
   }
@@ -558,7 +550,7 @@ function locoInfo(train) {
   `;
 }
 
-function updateLocoSpeed(train) {
+function u(train) {
   const speedElem = document.getElementById('loco-speed');
   if (!speedElem || !train) return;
 
@@ -566,16 +558,16 @@ function updateLocoSpeed(train) {
   speedElem.textContent = `${speed} km/h`;
 }
 
-function LocoUpdate(name) {
-  if (locoInfoUpdater) clearInterval(locoInfoUpdater);
+function l(name) {
+  if (liu) clearInterval(liu);
 
   const train = tDMap.get(name);
   if (!train) return;
 
-  locoInfo(train);
+  li(train);
 
-  locoInfoUpdater = setInterval(() => {
+  liu = setInterval(() => {
     const currentTrain = tDMap.get(name);
-    if (currentTrain) updateLocoSpeed(currentTrain);
+    if (currentTrain) u(currentTrain);
   }, 5000);
 }
