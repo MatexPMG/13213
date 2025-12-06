@@ -277,25 +277,13 @@ function secondsSinceMidnight(isoStr) {
   return (d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds())+3600;
 }
 
-// Store previous positions for heading calculation
-const previousPositionsRJ = {};  // store last pos for all Railjets
-function calculateHeading(prevLat, prevLon, lat, lon) {
-  const toRad = deg => deg * Math.PI / 180;
-  const toDeg = rad => rad * 180 / Math.PI;
-
-  const φ1 = toRad(prevLat);
-  const φ2 = toRad(lat);
-  const Δλ = toRad(lon - prevLon);
-
-  const y = Math.sin(Δλ) * Math.cos(φ2);
-  const x = Math.cos(φ1) * Math.sin(φ2) -
-            Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
-
-  let brng = Math.atan2(y, x);
-  brng = toDeg(brng);
-  return (brng + 360) % 360; // normalize
+function hhmmssToSeconds(hms) {
+  if (!hms) return null;
+  const h = parseInt(hms.slice(0, 2), 10);
+  const m = parseInt(hms.slice(2, 4), 10);
+  const s = parseInt(hms.slice(4, 6), 10);
+  return h * 3600 + m * 60 + s;
 }
-
 
 async function fetchOEBB() {
   try {
@@ -310,7 +298,6 @@ async function fetchOEBB() {
 
     const jnyL = data?.svcResL?.[0]?.res?.jnyL || [];
     const common = data?.svcResL?.[0]?.res?.common || {};
-    const prodL = common?.prodL || [];
 
     const unified = [];
 
@@ -322,42 +309,14 @@ for (const j of jnyL) {
   const nr = (prod?.name).match(/\d+/)[0] || "";
   const cat = prod?.prodCtx?.catOutL || "";
 
-  if (cat !== "railjet xpress") continue;
+  if (cat !== "railjet xpress") continue; // only Railjets
 
-  // -------------------------------
-  // UNIQUE TRAIN ID — IMPORTANT!
-  // -------------------------------
-  const id = "RJ" + nr;  // for example "RJ68", "RJ64"
-
-  // -------------------------------
-  // HEADING CALCULATION
-  // -------------------------------
-  let heading = null;
-
-  if (previousPositionsRJ[id]) {
-    const prev = previousPositionsRJ[id];
-
-    // moved?
-    if (prev.lat !== lat || prev.lon !== lon) {
-      heading = calculateHeading(prev.lat, prev.lon, lat, lon);
-    } else {
-      // keep old heading if standing still
-      heading = prev.heading ?? null;
-    }
-  }
-
-  // save new
-  previousPositionsRJ[id] = { lat, lon, heading };
-
-  // -------------------------------
-  // TRAIN OBJECT
-  // -------------------------------
   const trainObj = {
-    vehicleId: id,
+    vehicleId: "railjet",
     lat,
     lon,
-    heading,
-    speed: null,
+    heading: null,
+    speed: null, // ÖBB does not provide speed
     lastUpdated: Math.floor(Date.now() / 1000),
     nextStop: { arrivalDelay: null, stopName: null },
     tripShortName: nr + " " + cat,
@@ -407,7 +366,6 @@ for (const j of jnyL) {
         departureDelay
       };
     });
-
 
         trainObj.trip = {
           arrivalStoptime: {
