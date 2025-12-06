@@ -386,7 +386,7 @@ async function fetchOEBB() {
         vehicleId: "railjet",
         lat,
         lon,
-        heading: headingDeg,
+        heading: j.dirGeo,
         speed: null, // ÖBB does not provide speed
         lastUpdated: Math.floor(Date.now() / 1000),
         nextStop: {arrivalDelay: arrivalDelay},
