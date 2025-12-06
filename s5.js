@@ -277,14 +277,6 @@ function secondsSinceMidnight(isoStr) {
   return (d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds())+3600;
 }
 
-function hhmmssToSeconds(hms) {
-  if (!hms) return null;
-  const h = parseInt(hms.slice(0, 2), 10);
-  const m = parseInt(hms.slice(2, 4), 10);
-  const s = parseInt(hms.slice(4, 6), 10);
-  return h * 3600 + m * 60 + s;
-}
-
 // Store previous positions for heading calculation
 const previousPositionsRJ = {};  // store last pos for all Railjets
 function calculateHeading(prevLat, prevLon, lat, lon) {
