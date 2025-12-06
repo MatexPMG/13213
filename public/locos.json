@@ -6,6 +6,13 @@
     "vmax": 160,
     "power": "5200 kW"
   },
+  "et": {
+    "nick": "rj",
+    "manufacturer": "Siemens",
+    "production": "2010-",
+    "vmax": 160,
+    "power": "5200 kW"
+  },
     "293": {
     "nick": "Vectron",
     "manufacturer": "Siemens",
