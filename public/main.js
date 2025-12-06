@@ -503,31 +503,44 @@ function locoInfo(train) {
   const panel = document.getElementById('loco-info');
   panel.style.display = 'block';
 
-  const rawUIC = train.vehicleId.split(':')[1];
-  const series = uicC(rawUIC);
-  const loco = locoData[series];
+  const isRailjet = train.vehicleId === "railjet";
 
+  let rawUIC;
+  if (isRailjet) {
+    rawUIC = "railjet";                     // display in UI
+  } else {
+    rawUIC = train.vehicleId.split(':')[1] || train.vehicleId;
+  }
+
+  const series = isRailjet ? "railjet" : (uicC(rawUIC) || rawUIC);
+  const loco = locoData[series] || {};
   function uicF(uic) {
     if (!uic || uic.length < 12) return uic;
     return `${uic.slice(0,2)} ${uic.slice(2,4)} ${uic.slice(4,8)} ${uic.slice(8,11)}-${uic.slice(11)}`;
   }
-  const formattedUIC = uicF(rawUIC);
-
+  const formattedUIC = isRailjet ? "railjet" : uicF(rawUIC);
   const speed = Math.round(train.speed * 3.6) || 'N/A';
-  const nick = loco?.nick || '-';
-  const manufacturer = loco?.manufacturer || '-';
-  const production = loco?.production || '-';
-  const vmax = loco?.vmax || '-';
-  const power = loco?.power || '-';
-  const UIC = train.vehicleId.split(':')[1];
-  const locNum = `${UIC.slice(5,8)} ${UIC.slice(8,11)}`;
+  const nick = loco.nick || '-';
+  const manufacturer = loco.manufacturer || '-';
+  const production = loco.production || '-';
+  const vmax = loco.vmax || '-';
+  const power = loco.power || '-';
 
-  const imgSrc = `img/vehicles/${series}/${locNum}.jpg`;
-  const FBCKimgSrc = `img/vehicles/${series}.jpg`;
+  let imgSrc, FBCKimgSrc;
+  if (isRailjet) {
+    imgSrc = `img/vehicles/railjet.jpg`;
+    FBCKimgSrc = `img/vehicles/railjet.jpg`;
+  } else {
+    const UIC = train.vehicleId.split(':')[1] || "";
+    const locNum = UIC ? `${UIC.slice(5,8)} ${UIC.slice(8,11)}` : rawUIC;
+    imgSrc = `img/vehicles/${series}/${locNum}.jpg`;
+    FBCKimgSrc = `img/vehicles/${series}.jpg`;
+  }
 
   panel.innerHTML = `
     <h2>Vontatójármű</h2>
-    <img src="${imgSrc}" alt="${series}" id="locoIMG" onerror="this.onerror=null; this.src='${FBCKimgSrc}';" />
+    <img src="${imgSrc}" alt="${series}" id="locoIMG"
+         onerror="this.onerror=null; this.src='${FBCKimgSrc}';" />
     <p>${formattedUIC}</p>
     <table>
       <tr><td>Sebesség:</td><td id="loco-speed">${speed} km/h</td></tr>
@@ -544,7 +557,7 @@ function updateLocoSpeed(train) {
   const speedElem = document.getElementById('loco-speed');
   if (!speedElem || !train) return;
 
-  const speed = Math.round(train.speed * 3.6) || '0';
+  const speed = Math.round(train.speed * 3.6) || 'N/A';
   speedElem.textContent = `${speed} km/h`;
 }
 

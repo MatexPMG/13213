@@ -1,13 +1,13 @@
 {
+  "railjet": {
+    "nick": "railjet",
+    "manufacturer": "Siemens",
+    "production": "2007-2008",
+    "vmax": 230,
+    "power": "6400 kW"
+  },
   "193": {
     "nick": "Vectron",
-    "manufacturer": "Siemens",
-    "production": "2010-",
-    "vmax": 160,
-    "power": "5200 kW"
-  },
-  "et": {
-    "nick": "rj",
     "manufacturer": "Siemens",
     "production": "2010-",
     "vmax": 160,

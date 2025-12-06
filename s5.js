@@ -326,7 +326,7 @@ async function fetchOEBB() {
         vehicleId: "railjet",
         lat,
         lon,
-        heading: 90*(j.dirGeo),
+        heading: null,
         speed: null, // ÖBB does not provide speed
         lastUpdated: Math.floor(Date.now() / 1000),
         nextStop: {arrivalDelay: arrivalDelay},
@@ -346,7 +346,7 @@ async function fetchOEBB() {
   ? actualArrival - scheduledArrival
   : null;
 
- const scheduledDeparture = secondsSinceMidnight(stop.start);
+ const scheduledDeparture = secondsSinceMidnight(stop.start) || scheduledArrival;
  const actualDeparture = secondsSinceMidnight(stop.actualOrEstimatedStart);
  const departureDelay = actualDeparture != null && scheduledDeparture != null
   ? actualDeparture - scheduledDeparture
