@@ -366,7 +366,7 @@ async function fetchOEBB() {
             arrivalDelay: stoptimes[stoptimes.length - 1]?.arrivalDelay || null,
             stop: { name: stoptimes[stoptimes.length - 1]?.stop.name || null }
           },
-          alerts: ["Vonatpozíció az ÖBB adatai alapján"], // optional, fill if available
+          alerts: [ { alertDescriptionText: "Vonatpozíció az ÖBB adatai alapján" }], // optional, fill if available
           tripShortName: trainObj.tripShortName,
           route: { shortName: trainObj.routeShortName },
           stoptimes,
