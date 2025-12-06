@@ -302,60 +302,72 @@ async function fetchOEBB() {
 
     const unified = [];
 
-    for (const j of jnyL) {
-      const nextStop = j.stopL[2] || null;
-      const lat = j.pos?.y / 1e6;
-      const lon = j.pos?.x / 1e6;
+for (const j of jnyL) {
+  const lat = j.pos?.y / 1e6;
+  const lon = j.pos?.x / 1e6;
 
-      const prod = prodL[j.prodX];
-      const nr = (prod?.name).match(/\d+/)[0] || "";
-      const cat = prod?.prodCtx?.catOutL || "";
+  const prod = prodL[j.prodX];
+  const nr = (prod?.name).match(/\d+/)[0] || "";
+  const cat = prod?.prodCtx?.catOutL || "";
 
-      if (cat !== "railjet xpress") continue; // only Railjets
+  if (cat !== "railjet xpress") continue; // only Railjets
 
-      const scheduledSec = hhmmssToSeconds(nextStop.aTimeS); // scheduled
- const actualSec = hhmmssToSeconds(nextStop.aTimeR);    // actual
- const arrivalDelay = scheduledSec != null && actualSec != null
-  ? actualSec - scheduledSec
-  : null;
+  const trainObj = {
+    vehicleId: "railjet",
+    lat,
+    lon,
+    heading: null,
+    speed: null, // ÖBB does not provide speed
+    lastUpdated: Math.floor(Date.now() / 1000),
+    nextStop: { arrivalDelay: null, stopName: null },
+    tripShortName: nr + " " + cat,
+    tripHeadsign: j.dirTxt || null,
+    routeShortName: "<span class=\"MNR2007\">&#481;</span>",
+    trip: { stoptimes: [], tripGeometry: { points: "" } }
+  };
 
-      const trainObj = {
-        vehicleId: "railjet",
-        lat,
-        lon,
-        heading: null,
-        speed: null, // ÖBB does not provide speed
-        lastUpdated: Math.floor(Date.now() / 1000),
-        nextStop: {arrivalDelay: arrivalDelay},
-        tripShortName: nr + " " + cat,
-        tripHeadsign: j.dirTxt || null,
-        routeShortName: "<span class=\"MNR2007\">&#481;</span>"
+  // ---- Enrich with MÁV timetable ----
+  try {
+    const scheduler = await fetchMAVTimetable(nr);
+
+    const nowSec = (() => {
+      const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Budapest" }));
+      return now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+    })();
+
+    let nextStopFound = false;
+
+    const stoptimes = scheduler.map(stop => {
+      const scheduledArrival = secondsSinceMidnight(stop.arrive);
+      const actualArrival = secondsSinceMidnight(stop.actualOrEstimatedArrive);
+      const arrivalDelay = actualArrival != null && scheduledArrival != null
+        ? actualArrival - scheduledArrival
+        : null;
+
+      const scheduledDeparture = secondsSinceMidnight(stop.start) || scheduledArrival;
+      const actualDeparture = secondsSinceMidnight(stop.actualOrEstimatedStart);
+      const departureDelay = actualDeparture != null && scheduledDeparture != null
+        ? actualDeparture - scheduledDeparture
+        : null;
+
+      // Set next upcoming stop (only first one in the future)
+      if (!nextStopFound && actualArrival != null && actualArrival >= nowSec) {
+        trainObj.nextStop = {
+          arrivalDelay: arrivalDelay,
+          stopName: stop.station.name
+        };
+        nextStopFound = true;
+      }
+
+      return {
+        stop: { name: stop.station.name, platformCode: stop.endTrack || null },
+        scheduledArrival,
+        arrivalDelay,
+        scheduledDeparture,
+        departureDelay
       };
+    });
 
-      // ---- Enrich with MAV timetable ----
-      try {
-        const scheduler = await fetchMAVTimetable(nr);
-
-        const stoptimes = scheduler.map(stop => {
- const scheduledArrival = secondsSinceMidnight(stop.arrive);
- const actualArrival = secondsSinceMidnight(stop.actualOrEstimatedArrive);
- const arrivalDelay = actualArrival != null && scheduledArrival != null
-  ? actualArrival - scheduledArrival
-  : null;
-
- const scheduledDeparture = secondsSinceMidnight(stop.start) || scheduledArrival;
- const actualDeparture = secondsSinceMidnight(stop.actualOrEstimatedStart);
- const departureDelay = actualDeparture != null && scheduledDeparture != null
-  ? actualDeparture - scheduledDeparture
-  : null;
-          return {
-            stop: { name: stop.station.name, platformCode: stop.endTrack || null },
-            scheduledArrival,
-            arrivalDelay,
-            scheduledDeparture,
-            departureDelay
-          };
-        });
 
         trainObj.trip = {
           arrivalStoptime: {
