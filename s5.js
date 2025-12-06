@@ -323,10 +323,10 @@ async function fetchOEBB() {
 
 
       const trainObj = {
-        vehicleId: "1:918011162310",
+        vehicleId: "railjet",
         lat,
         lon,
-        heading: null,
+        heading: 90*(j.dirGeo),
         speed: null, // ÖBB does not provide speed
         lastUpdated: Math.floor(Date.now() / 1000),
         nextStop: {arrivalDelay: arrivalDelay},
