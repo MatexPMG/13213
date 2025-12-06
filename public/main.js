@@ -512,7 +512,7 @@ function locoInfo(train) {
 
   let rawUIC;
   if (isRailjet) {
-    rawUIC = "railjet";                     // display in UI
+    rawUIC = "railjet";
   } else {
     rawUIC = train.vehicleId.split(':')[1] || train.vehicleId;
   }
