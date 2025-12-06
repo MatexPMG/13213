@@ -524,7 +524,7 @@ function locoInfo(train) {
     return `${uic.slice(0,2)} ${uic.slice(2,4)} ${uic.slice(4,8)} ${uic.slice(8,11)}-${uic.slice(11)}`;
   }
   const formattedUIC = isRailjet ? "railjet" : uicF(rawUIC);
-  const speed = Math.round(train.speed * 3.6) || 'N/A';
+  const speed = isRailjet ? "N/A" : Math.round(train.speed * 3.6) || '0';
   const nick = loco.nick || '-';
   const manufacturer = loco.manufacturer || '-';
   const production = loco.production || '-';
@@ -562,7 +562,7 @@ function updateLocoSpeed(train) {
   const speedElem = document.getElementById('loco-speed');
   if (!speedElem || !train) return;
 
-  const speed = Math.round(train.speed * 3.6) || 'N/A';
+  const speed = isRailjet ? "N/A" : Math.round(train.speed * 3.6) || '0';
   speedElem.textContent = `${speed} km/h`;
 }
 
