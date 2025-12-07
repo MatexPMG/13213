@@ -331,7 +331,7 @@ for (const j of jnyL) {
     const prev = lastPositions[tripShortName];
 
     if (prev.lat !== lat || prev.lon !== lon) {
-      heading = calculateHeading(prev.lat, prev.lon, lat, lon);
+      heading = Math.round(calculateHeading(prev.lat, prev.lon, lat, lon));
     }
   }
 
