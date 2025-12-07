@@ -277,12 +277,25 @@ function secondsSinceMidnight(isoStr) {
   return (d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds())+3600;
 }
 
-function hhmmssToSeconds(hms) {
-  if (!hms) return null;
-  const h = parseInt(hms.slice(0, 2), 10);
-  const m = parseInt(hms.slice(2, 4), 10);
-  const s = parseInt(hms.slice(4, 6), 10);
-  return h * 3600 + m * 60 + s;
+const lastPositions = {};  // { tripShortName: { lat, lon } }
+
+// heading formula
+function calculateHeading(lat1, lon1, lat2, lon2) {
+  const toRad = d => d * Math.PI / 180;
+  const toDeg = r => r * 180 / Math.PI;
+
+  const φ1 = toRad(lat1);
+  const φ2 = toRad(lat2);
+  const λ1 = toRad(lon1);
+  const λ2 = toRad(lon2);
+
+  const y = Math.sin(λ2 - λ1) * Math.cos(φ2);
+  const x =
+    Math.cos(φ1) * Math.sin(φ2) -
+    Math.sin(φ1) * Math.cos(φ2) * Math.cos(λ2 - λ1);
+
+  let brng = toDeg(Math.atan2(y, x));
+  return (brng + 360) % 360;
 }
 
 async function fetchOEBB() {
@@ -311,16 +324,28 @@ for (const j of jnyL) {
   const cat = prod?.prodCtx?.catOutL || "";
 
   if (cat !== "railjet xpress") continue; // only Railjets
+  const tripShortName = nr + " " + cat;
+
+  let heading = null;
+  if (lastPositions[tripShortName]) {
+    const prev = lastPositions[tripShortName];
+
+    if (prev.lat !== lat || prev.lon !== lon) {
+      heading = calculateHeading(prev.lat, prev.lon, lat, lon);
+    }
+  }
+
+  lastPositions[tripShortName] = { lat, lon };
 
   const trainObj = {
     vehicleId: "railjet",
     lat,
     lon,
-    heading: null,
+    heading,
     speed: null, // ÖBB does not provide speed
     lastUpdated: Math.floor(Date.now() / 1000),
     nextStop: { arrivalDelay: null, stopName: null },
-    tripShortName: nr + " " + cat,
+    tripShortName,
     tripHeadsign: j.dirTxt || null,
     routeShortName: "<span class=\"MNR2007\">&#481;</span>",
     trip: { stoptimes: [], tripGeometry: { points: "" } }
