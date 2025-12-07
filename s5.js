@@ -342,7 +342,7 @@ for (const j of jnyL) {
     lat,
     lon,
     heading,
-    speed: null, // ÖBB does not provide speed
+    speed: 10, // ÖBB does not provide speed
     lastUpdated: Math.floor(Date.now() / 1000),
     nextStop: { arrivalDelay: null, stopName: null },
     tripShortName,
