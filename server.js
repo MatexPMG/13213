@@ -10,7 +10,6 @@ const pipeline = promisify(stream.pipeline);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-/* ================= CONFIG ================= */
 
 const TILE_SOURCE = "https://tiles.openrailwaymap.org/standard";
 const MAX_ZOOM = 17;
