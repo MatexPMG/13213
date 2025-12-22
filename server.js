@@ -1,9 +1,9 @@
-const express = require("express");
-const fetch = require("node-fetch");
-const compression = require("compression");
-const { S3Client, GetObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3");
-const stream = require("stream");
-const { promisify } = require("util");
+import express from "express";
+import compression from "compression";
+import fetch from "node-fetch";  // now works
+import { S3Client, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import stream from "stream";
+import { promisify } from "util";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
