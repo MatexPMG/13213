@@ -1,6 +1,7 @@
 import express from "express";
 import compression from "compression";
-import fetch from "node-fetch";  // now works
+import fetch from "node-fetch";  
+import https from "https";        // added for custom agent
 import { S3Client, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import stream from "stream";
 import { promisify } from "util";
@@ -8,7 +9,7 @@ import { promisify } from "util";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const TILE_SOURCE = "https://tiles.openrailwaymap.org/standard";
+const TILE_SOURCE = "https://tiles.openrailwaymap.org/standard"; // upstream tiles
 const MAX_ZOOM = 17;
 const MIN_ZOOM = 6;
 
@@ -28,6 +29,9 @@ const s3 = new S3Client({
 const BUCKET = process.env.OBJ_BUCKET;
 
 const pipeline = promisify(stream.pipeline);
+
+// HTTPS agent to ignore TLS hostname/cert errors (for testing only)
+const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
 function memGet(key) {
   if (!memCache.has(key)) return null;
@@ -95,8 +99,10 @@ app.get("/tiles/:z/:x/:y.png", async (req, res) => {
   // Fetch upstream if missing
   try {
     const response = await fetch(`${TILE_SOURCE}/${z}/${x}/${y}.png`, {
-      headers: { "User-Agent": "HU-OpenRailwayMap-TileCache" }
+      headers: { "User-Agent": "HU-OpenRailwayMap-TileCache" },
+      agent: httpsAgent, // <-- use custom agent to ignore TLS errors
     });
+
     if (!response.ok) return res.status(response.status).end();
 
     const buffer = await response.buffer();
@@ -113,6 +119,6 @@ app.get("/tiles/:z/:x/:y.png", async (req, res) => {
   }
 });
 
-app.get("/", (_, res) => res.send("🚆 Tile cache running on Railway (Object Storage + CDN)"));
+app.get("/", (_, res) => res.send("🚆 Tile cache running (Object Storage + CDN)"));
 
 app.listen(PORT, () => console.log(`🚆 Tile cache listening on port ${PORT}`));
